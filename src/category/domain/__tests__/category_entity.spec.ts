@@ -1,10 +1,11 @@
+import { Uuid } from '../../../shared/domain/value_objects/uuid_vo'
 import { Category } from '../category_entity'
 
 describe('Category Entity Unit Test', () => {
   describe('constructor', () => {
     test('should create a category with default values', () => {
       const category = new Category({ name: 'Movie' })
-      expect(category.category_id).toBeUndefined()
+      expect(category.category_id).toBeInstanceOf(Uuid)
       expect(category.name).toBe('Movie')
       expect(category.description).toBeNull()
       expect(category.is_active).toBe(true)
@@ -20,7 +21,7 @@ describe('Category Entity Unit Test', () => {
         created_at
       })
   
-      expect(category.category_id).toBeUndefined()
+      expect(category.category_id).toBeInstanceOf(Uuid)
       expect(category.name).toBe('Movie')
       expect(category.description).toBe('Movie description')
       expect(category.is_active).toBe(false)
@@ -33,7 +34,7 @@ describe('Category Entity Unit Test', () => {
         description: 'Movie description',
       })
   
-      expect(category.category_id).toBeUndefined()
+      expect(category.category_id).toBeInstanceOf(Uuid)
       expect(category.name).toBe('Movie')
       expect(category.description).toBe('Movie description')
       expect(category.is_active).toBe(true)
@@ -46,7 +47,7 @@ describe('Category Entity Unit Test', () => {
       const category = Category.create({
         name: 'Movie',
       })
-      expect(category.category_id).toBeUndefined()
+      expect(category.category_id).toBeInstanceOf(Uuid)
       expect(category.name).toBe('Movie')
       expect(category.description).toBeNull()
       expect(category.is_active).toBe(true)
@@ -58,7 +59,7 @@ describe('Category Entity Unit Test', () => {
         name: 'Movie',
         description: 'Movie description',
       })
-      expect(category.category_id).toBeUndefined()
+      expect(category.category_id).toBeInstanceOf(Uuid)
       expect(category.name).toBe('Movie')
       expect(category.description).toBe('Movie description')
       expect(category.is_active).toBe(true)
@@ -71,7 +72,7 @@ describe('Category Entity Unit Test', () => {
         description: 'Movie description',
         is_active: false,
       })
-      expect(category.category_id).toBeUndefined()
+      expect(category.category_id).toBeInstanceOf(Uuid)
       expect(category.name).toBe('Movie')
       expect(category.description).toBe('Movie description')
       expect(category.is_active).toBe(false)
