@@ -42,6 +42,19 @@ describe('Category Entity Unit Test', () => {
     })
   })
 
+  describe('cayegory_id field', () => {
+    const arrange = [
+      { category_id: null }, { category_id: undefined }, { category_id: new Uuid()}
+    ]
+    test.each(arrange)('should if category_id is %j', ({ category_id }) => {
+      const category = new Category({
+        name: 'Movie',
+        category_id: category_id as any,
+      })
+      expect(category.category_id).toBeInstanceOf(Uuid)
+    })
+  })
+
   describe('create command', () => {
     test('should create a category', () => {
       const category = Category.create({
