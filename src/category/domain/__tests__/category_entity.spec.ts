@@ -2,6 +2,11 @@ import { Uuid } from '../../../shared/domain/value_objects/uuid_vo'
 import { Category } from '../category_entity'
 
 describe('Category Entity Unit Test', () => {
+  let validateSpy: any
+  beforeEach(() => {
+    validateSpy = jest.spyOn(Category, 'validate')
+  })
+
   describe('constructor', () => {
     test('should create a category with default values', () => {
       const category = new Category({ name: 'Movie' })
@@ -42,7 +47,7 @@ describe('Category Entity Unit Test', () => {
     })
   })
 
-  describe('cayegory_id field', () => {
+  describe('category_id field', () => {
     const arrange = [
       { category_id: null }, { category_id: undefined }, { category_id: new Uuid()}
     ]
@@ -65,6 +70,7 @@ describe('Category Entity Unit Test', () => {
       expect(category.description).toBeNull()
       expect(category.is_active).toBe(true)
       expect(category.created_at).toBeInstanceOf(Date)
+      expect(validateSpy).toHaveBeenCalledTimes(1)
     })
 
     test('should create a category with description', () => {
@@ -77,6 +83,7 @@ describe('Category Entity Unit Test', () => {
       expect(category.description).toBe('Movie description')
       expect(category.is_active).toBe(true)
       expect(category.created_at).toBeInstanceOf(Date)
+      expect(validateSpy).toHaveBeenCalledTimes(1)
     })
 
     test('should create a category with is_active', () => {
@@ -90,6 +97,7 @@ describe('Category Entity Unit Test', () => {
       expect(category.description).toBe('Movie description')
       expect(category.is_active).toBe(false)
       expect(category.created_at).toBeInstanceOf(Date)
+      expect(validateSpy).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -100,6 +108,7 @@ describe('Category Entity Unit Test', () => {
       })
       category.changeName('Movie 2')
       expect(category.name).toBe('Movie 2')
+      expect(validateSpy).toHaveBeenCalledTimes(2)
     })
 
     test('should change description', () => {
@@ -109,6 +118,7 @@ describe('Category Entity Unit Test', () => {
       })
       category.changeDescription('Movie description 2')
       expect(category.description).toBe('Movie description 2')
+      expect(validateSpy).toHaveBeenCalledTimes(2)
     })
 
     test('should change is_active', () => {
