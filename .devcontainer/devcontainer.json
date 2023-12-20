@@ -39,11 +39,16 @@
 			"extensions": [
 				"Orta.vscode-jest",
 				"firsttris.vscode-jest-runner",
+        "esbenp.prettier-vscode",
         "andys8.jest-snippets",
         "dracula-theme.theme-dracula",
         "natqe.reload",
         "tabnine.tabnine-vscode"
-			]
+			],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+      }
 		}
 	}
 
