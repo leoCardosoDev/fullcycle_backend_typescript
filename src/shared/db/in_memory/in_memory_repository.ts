@@ -1,4 +1,4 @@
-import { Entity } from '../../domain/entiy'
+import { Entity } from '../../domain/entity'
 import { IRepository } from '../../domain/repository/repository_interface'
 import { ValueObject } from '../../domain/value_object'
 

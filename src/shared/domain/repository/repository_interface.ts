@@ -1,4 +1,4 @@
-import { Entity } from '../entiy'
+import { Entity } from '../entity'
 import { ValueObject } from '../value_object'
 
 export interface IRepository <E extends Entity, EntityId extends ValueObject>{
