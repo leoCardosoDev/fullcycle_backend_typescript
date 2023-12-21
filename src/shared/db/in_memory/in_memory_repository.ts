@@ -23,7 +23,7 @@ export abstract class InMemoryRepository<E extends Entity, EntityId extends Valu
 
   async delete(entity_id: EntityId): Promise<void> {
     const indexFound = this.items.findIndex((item) => item.entity_id.equals(entity_id))
-    if (indexFound !== -1) {
+    if (indexFound === -1) {
       throw new NotFoundError(entity_id, this.getEntity())
     }
     this.items.splice(indexFound, 1)
