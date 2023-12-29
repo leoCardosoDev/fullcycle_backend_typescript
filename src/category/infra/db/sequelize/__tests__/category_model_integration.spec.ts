@@ -3,14 +3,19 @@ import { CategoryModel } from '../category_model'
 import { Category } from '../../../../domain/category_entity'
 
 describe('CategoryModel Integration Tests', () => {
-  test('should create a category', async () => {
-    const sequelize = new Sequelize({
+  let sequelize
+
+  beforeEach(async () => {
+    sequelize = new Sequelize({
       dialect: 'sqlite',
       logging: false,
       storage: ':memory:',
       models: [CategoryModel]
     })
     await sequelize.sync({ force: true })
+  })
+
+  test('should create a category', async () => {
     const category = Category.fake().aCategory().build()
     CategoryModel.create({
       category_id: category.category_id.id,
