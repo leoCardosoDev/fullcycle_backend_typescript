@@ -78,4 +78,15 @@ describe('CategoryModel Integration Tests', () => {
       created_at: category.created_at
     })
   })
+
+  test("create", async () => {
+    const arrange = {
+      category_id: "9366b7dc-2d71-4799-b91c-c64adb205104",
+      name: "test",
+      is_active: true,
+      created_at: new Date(),
+    };
+    const category = await CategoryModel.create(arrange);
+    expect(category.toJSON()).toStrictEqual(arrange);
+  });
 })
