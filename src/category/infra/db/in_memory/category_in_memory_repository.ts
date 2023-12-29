@@ -1,7 +1,7 @@
-import { InMemorySearchableRepository } from '../../../shared/infra/db/in_memory/in_memory_repository'
-import { Uuid } from '../../../shared/domain/value_objects/uuid_vo'
-import { Category } from '../../domain/category_entity'
-import { SortDirection } from '../../../shared/domain/repository/search_params'
+import { InMemorySearchableRepository } from '../../../../shared/infra/db/in_memory/in_memory_repository'
+import { Uuid } from '../../../../shared/domain/value_objects/uuid_vo'
+import { Category } from '../../../domain/category_entity'
+import { SortDirection } from '../../../../shared/domain/repository/search_params'
 
 export class CategoryInMemoryRepository extends InMemorySearchableRepository<Category, Uuid> {
   sortableFields: string[] = ['name', 'created_at']
