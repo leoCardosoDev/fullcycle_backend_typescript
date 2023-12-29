@@ -43,6 +43,7 @@
         "andys8.jest-snippets",
         "dracula-theme.theme-dracula",
         "natqe.reload",
+        "blackboxapp.blackbox",
         "tabnine.tabnine-vscode"
 			],
       "settings": {
