@@ -1,116 +1,92 @@
-import { Op } from 'sequelize'
-import { NotFoundError } from '../../../../shared/domain/errors/not_found_error'
-import { Uuid } from '../../../../shared/domain/value_objects/uuid_vo'
-import { Category } from '../../../domain/category_entity'
+import { Op } from "sequelize";
 import { CategorySearchParams, CategorySearchResult, ICategoryRepository } from '../../../domain/category_repository'
 import { CategoryModel } from './category_model'
+import { Category } from '../../../domain/category_entity'
+import { CategoryModelMapper } from './category_model_mapper'
+import { NotFoundError } from '../../../../shared/domain/errors/not_found_error'
+import { Uuid } from '../../../../shared/domain/value_objects/uuid_vo'
 
 export class CategorySequelizeRepository implements ICategoryRepository {
-  sortableFields: string[] = ['name', 'created_at']
+  sortableFields: string[] = ["name", "created_at"];
 
-  constructor (private readonly categoryModel: typeof CategoryModel) {}
+  constructor(private categoryModel: typeof CategoryModel) {}
 
-  async insert (entity: Category): Promise<void> {
-    await this.categoryModel.create({
-      category_id: entity.category_id.id,
-      name: entity.name,
-      description: entity.description,
-      is_active: entity.is_active,
-      created_at: entity.created_at
-    })
+  async insert(entity: Category): Promise<void> {
+    const modelProps = CategoryModelMapper.toModel(entity);
+    await this.categoryModel.create(modelProps.toJSON());
   }
 
-  async bulkInsert (entities: Category[]): Promise<void> {
-    await this.categoryModel.bulkCreate(entities.map((entity) => ({
-      category_id: entity.category_id.id,
-      name: entity.name,
-      description: entity.description,
-      is_active: entity.is_active,
-      created_at: entity.created_at
-    })))
+  async bulkInsert(entities: Category[]): Promise<void> {
+    const modelsProps = entities.map((entity) =>
+      CategoryModelMapper.toModel(entity).toJSON()
+    );
+    await this.categoryModel.bulkCreate(modelsProps);
   }
 
-  private async _get (id: string) {
-    return await this.categoryModel.findByPk(id)
-  }
-
-  async update (entity: Category): Promise<void> {
-    const id = entity.category_id.id
-    const model = await this._get(id)
-    if(!model) {
-      throw new NotFoundError(id, this.getEntity())
+  async update(entity: Category): Promise<void> {
+    const id = entity.category_id.id;
+    const model = await this._get(id);
+    if (!model) {
+      throw new NotFoundError(id, this.getEntity());
     }
-    await this.categoryModel.update({
-      name: entity.name,
-      description: entity.description,
-      is_active: entity.is_active
-    }, {
-      where: { category_id: id }
-    })
+    const modelProps = CategoryModelMapper.toModel(entity);
+    await this.categoryModel.update(modelProps.toJSON(), {
+      where: { category_id: id },
+    });
   }
 
-  async delete (entity_id: Uuid): Promise<void> {
-    const id = entity_id.id
-    const model = await this._get(id)
-    if(!model) {
-      throw new NotFoundError(id, this.getEntity())
+  async delete(category_id: Uuid): Promise<void> {
+    const id = category_id.id;
+    const model = await this._get(id);
+    if (!model) {
+      throw new NotFoundError(id, this.getEntity());
     }
-    await this.categoryModel.destroy({ where: { category_id: id } })
+    await this.categoryModel.destroy({ where: { category_id: id } });
   }
 
-  async findById (entity_id: Uuid): Promise<Category | null> {
-    const model = await this._get(entity_id.id)
-    return new Category({
-      category_id: new Uuid(model.category_id),
-      name: model.name,
-      description: model.description,
-      is_active: model.is_active,
-      created_at: model.created_at
-    })
+  async findById(entity_id: Uuid): Promise<Category | null> {
+    const model = await this._get(entity_id.id);
+
+    return model ? CategoryModelMapper.toEntity(model) : null;
   }
 
-  async findAll (): Promise<Category[]> {
-    const models = await this.categoryModel.findAll()
-    return models.map((model) => new Category({
-      category_id: new Uuid(model.category_id),
-      name: model.name,
-      description: model.description,
-      is_active: model.is_active,
-      created_at: model.created_at
-    }))
+  private async _get(id: string) {
+    return await this.categoryModel.findByPk(id);
   }
 
-  async search (props: CategorySearchParams): Promise<CategorySearchResult> {
-    const offset = (props.page -1) * props.per_page
-    const limit = props.per_page
+  async findAll(): Promise<Category[]> {
+    const models = await this.categoryModel.findAll();
+    return models.map((model) => {
+      return CategoryModelMapper.toEntity(model);
+    });
+  }
+
+  async search(props: CategorySearchParams): Promise<CategorySearchResult> {
+    const offset = (props.page - 1) * props.per_page;
+    const limit = props.per_page;
     const { rows: models, count } = await this.categoryModel.findAndCountAll({
       ...(props.filter && {
         where: {
-          name: { [Op.like]: `%${props.filter}%`}
-        }
+          name: { [Op.like]: `%${props.filter}%` },
+        },
       }),
       ...(props.sort && this.sortableFields.includes(props.sort)
-        ? { order: [[props.sort, props.sort_dir]] } 
-        : { order: [['created_at', 'desc']] }),
-        offset,
-        limit
-    })
+        ? { order: [[props.sort, props.sort_dir]] }
+        : { order: [["created_at", "desc"]] }),
+      offset,
+      limit,
+    });
     return new CategorySearchResult({
-      items: models.map((model: any ) => {
-        return new Category({
-          category_id: new Uuid(model.category_id),
-          name: model.name,
-          description: model.description,
-          is_active: model.is_active,
-          created_at: model.created_at
-        })
+      items: models.map((model) => {
+        return CategoryModelMapper.toEntity(model);
       }),
       current_page: props.page,
       per_page: props.per_page,
-      total: count
-    })
+      total: count,
+    });
   }
-  getEntity (): new (...args: any[]) => Category {
-    return Category
+
+  getEntity(): new (...args: any[]) => Category {
+    return Category;
   }
 }
